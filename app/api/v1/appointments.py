@@ -1,4 +1,3 @@
-from app.schemas.appointment import AppointmentOut
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -6,7 +5,7 @@ from app.core.database import get_db
 from app.exceptions import SlotNotFoundError, SlotAlreadyBookedError
 from app.schemas.appointment import AppointmentCreate, AppointmentOut
 from app.services.appointment_service import AppointmentService
-
+from app.celery_app import send_appointment_reminder
 router = APIRouter(prefix="/appointments", tags=["appointments"])
 
 
@@ -31,3 +30,10 @@ async def create_appointment(
     except SlotAlreadyBookedError:
         raise HTTPException(status_code=409, detail="Этот слот уже занят")
     return result
+
+
+@router.post("/send-reminder")
+async def send_reminder_of_appointment(patient_email: str,
+slot_time: str):
+    result = send_appointment_reminder.delay(patient_email, slot_time)
+    return {"id": result.id}
