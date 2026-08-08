@@ -6,3 +6,9 @@ class SlotNotFoundError(ClinicError):
 
 class SlotAlreadyBookedError(ClinicError):
     pass
+
+class UserAlreadyExistsError(ClinicError):
+    pass
+
+class InvalidCredentialsError(ClinicError):
+    pass

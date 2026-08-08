@@ -15,3 +15,4 @@ testcontainers[postgres]
 celery==5.6.3
 celery-types==0.26.0
 redis==8.1.0
+bcrypt<4.1

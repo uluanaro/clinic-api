@@ -24,3 +24,9 @@ class SlotRepository:
             select(Slot).where(Slot.doctor_id == doctor_id)
         )
         return result.scalars().all()
+
+    async def get_by_id(self, id: int) -> Slot | None:
+        result = await self.session.execute(
+            select(Slot).where(Slot.id == id)
+        )
+        return result.scalar_one_or_none()
