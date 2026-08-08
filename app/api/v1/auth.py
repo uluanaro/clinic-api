@@ -7,6 +7,16 @@ from app.schemas.user import UserOut, UserRegister, Token, UserLogin
 from app.services.auth_service import AuthService
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+
+from app.api.deps import get_current_user
+from app.models import User
+
+@router.get("/me", response_model=UserOut)
+async def get_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+
+
 @router.post("/register",
              response_model=UserOut,
              status_code=201)
