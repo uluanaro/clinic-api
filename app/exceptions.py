@@ -12,3 +12,6 @@ class UserAlreadyExistsError(ClinicError):
 
 class InvalidCredentialsError(ClinicError):
     pass
+
+class PatientNotFoundError(ClinicError):
+    pass
