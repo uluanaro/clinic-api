@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.api.deps import require_role
+from app.models import User
 
 from app.core.database import get_db
 from app.exceptions import UserAlreadyExistsError, InvalidCredentialsError
@@ -44,5 +46,10 @@ async def login(
     except InvalidCredentialsError:
         raise HTTPException(401, "Неверные данные.")
     return Token(access_token=token)
+
+@router.get("/doctor-only")
+async def doctor_only(current_user: User = Depends(require_role("doctor"))):
+    return {"message": f"Привет, врач {current_user.email}"}
+
 
 

@@ -6,6 +6,7 @@ from sqlalchemy import select
 from app.core.database import get_db
 from app.core.security import decode_access_token
 from app.models.doctor import Doctor
+from app.models.user import User
 from fastapi import HTTPException, status
 
 from app.repositories.user_repository import UserRepository
@@ -23,6 +24,7 @@ async def get_existing_doctor(
     return doctor
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -42,5 +44,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
     if result is None:
         raise credentials_exception
     return result
+
+def require_role(required_role: str):
+    async def role_checker(current_user: User = Depends(get_current_user)):
+        if current_user.role != required_role:
+            raise HTTPException(403, f"Требуемая роль пользователя: {required_role}")
+        return current_user
+    return role_checker
+
 
 
