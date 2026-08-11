@@ -10,3 +10,5 @@ celery_app = Celery('celery_app',
 def send_appointment_reminder(self, patient_email: str, slot_time: str):
     print(f"Отправляю напоминание на {patient_email}...")
     return "Напоминание успешно доставлено"
+
+
